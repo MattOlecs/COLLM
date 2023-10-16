@@ -3,7 +3,7 @@ using SharpToken;
 
 namespace LMACO.Services;
 
-public class GptRequestCostSimulator : IGptRequestCostSimulator
+internal class GptRequestCostSimulator : IGptRequestCostSimulator
 {
     public double GetPromptPrice(string prompt)
     {

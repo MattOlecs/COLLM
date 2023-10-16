@@ -1,4 +1,5 @@
 using DAL.Utils;
+using LMACO.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,6 +12,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.RegisterLmacoDb(builder.Configuration);
 builder.Services.AddRepositories();
 
+builder.Services.RegisterServices();
 
 var app = builder.Build();
 
