@@ -1,4 +1,5 @@
-﻿using COLLM.DTO;
+﻿using COLLM.CQRS.Query;
+using COLLM.DTO;
 using COLLM.Interfaces.Services;
 using DAL.Entities;
 using DAL.Repositories.Interfaces;
@@ -11,15 +12,18 @@ public class RequestsController : AbstractController
     private readonly IRequestRepository _requestRepository;
     private readonly IGptRequestCostSimulator _gptRequestCostSimulator;
     private readonly IPythonScriptExecutor _pythonScriptExecutor;
+    private readonly IQueryDispatcher _queryDispatcher;
 
     public RequestsController(
         IRequestRepository requestRepository,
         IGptRequestCostSimulator gptRequestCostSimulator,
-        IPythonScriptExecutor pythonScriptExecutor)
+        IPythonScriptExecutor pythonScriptExecutor,
+        IQueryDispatcher queryDispatcher)
     {
         _requestRepository = requestRepository;
         _gptRequestCostSimulator = gptRequestCostSimulator;
         _pythonScriptExecutor = pythonScriptExecutor;
+        _queryDispatcher = queryDispatcher;
     }
 
     [HttpGet]
@@ -31,12 +35,10 @@ public class RequestsController : AbstractController
     }
     
     [HttpPost("similarity")]
-    public double GetSentencesSimilarity([FromBody] SentencesSimilarityDTO sentencesSimilarityDto)
+    public async Task<double> GetSentencesSimilarity([FromBody] SentencesSimilarityDTO sentencesSimilarityDto)
     {
-        return _pythonScriptExecutor
-            .GetSentencesSimilarityUsingSpacy(
-                sentencesSimilarityDto.FirstSentence,
-                sentencesSimilarityDto.SecondSentence);
+        return await _queryDispatcher.Dispatch<GetSentencesSimilarityQuery, double>(
+            new GetSentencesSimilarityQuery(sentencesSimilarityDto));
     }
 
     [HttpPost("cost")]
