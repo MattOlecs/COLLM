@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LMACO", "LMACO\LMACO.csproj", "{8103A042-047A-42D8-9898-BF41601E1D27}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "COLLM", "COLLM\COLLM.csproj", "{8103A042-047A-42D8-9898-BF41601E1D27}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{F2E4B837-175F-4FFB-887A-FEA5D3A9AAA0}"
 	ProjectSection(SolutionItems) = preProject

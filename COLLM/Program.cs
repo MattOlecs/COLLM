@@ -1,5 +1,5 @@
 using DAL.Utils;
-using LMACO.Extensions;
+using COLLM.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 

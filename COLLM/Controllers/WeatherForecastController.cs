@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Python.Runtime;
 
-namespace LMACO.Controllers;
+namespace COLLM.Controllers;
 
 [ApiController]
 [Route("[controller]")]

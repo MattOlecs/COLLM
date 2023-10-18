@@ -1,4 +1,4 @@
-﻿namespace LMACO.Interfaces.Services;
+﻿namespace COLLM.Interfaces.Services;
 
 public interface IPythonScriptExecutor
 {

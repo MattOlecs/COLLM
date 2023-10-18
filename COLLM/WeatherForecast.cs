@@ -1,4 +1,4 @@
-namespace LMACO;
+namespace COLLM;
 
 public class WeatherForecast
 {

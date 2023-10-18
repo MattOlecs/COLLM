@@ -9,7 +9,7 @@ public class DesignTimeContext : IDesignTimeDbContextFactory<LmacoContext>
     {
         var optionsBuilder = new DbContextOptionsBuilder<LmacoContext>();
         optionsBuilder.UseNpgsql(
-            "User ID=admin;Password=1111;Host=localhost;Port=5432;Database=LMACO;Pooling=true;");
+            "User ID=admin;Password=1111;Host=localhost;Port=5432;Database=COLLM;Pooling=true;");
 
         return new LmacoContext(optionsBuilder.Options);
     }

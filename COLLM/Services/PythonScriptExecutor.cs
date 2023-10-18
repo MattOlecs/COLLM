@@ -1,7 +1,7 @@
-﻿using LMACO.Interfaces.Services;
+﻿using COLLM.Interfaces.Services;
 using Python.Runtime;
 
-namespace LMACO.Services;
+namespace COLLM.Services;
 
 internal class PythonScriptExecutor : IPythonScriptExecutor
 {
@@ -23,6 +23,7 @@ internal class PythonScriptExecutor : IPythonScriptExecutor
         {
             dynamic spacy = Py.Import("spacy");
             dynamic nlp = spacy.load("en_core_web_sm");
+            // dynamic nlp = spacy.load("en_core_web_trf");
 
             dynamic doc1 = nlp(firstSentence);
             dynamic doc2 = nlp(secondSentence);

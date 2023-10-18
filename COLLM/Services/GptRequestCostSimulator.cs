@@ -1,7 +1,7 @@
-﻿using LMACO.Interfaces.Services;
+﻿using COLLM.Interfaces.Services;
 using SharpToken;
 
-namespace LMACO.Services;
+namespace COLLM.Services;
 
 internal class GptRequestCostSimulator : IGptRequestCostSimulator
 {

@@ -1,7 +1,7 @@
-﻿using LMACO.Interfaces.Services;
-using LMACO.Services;
+﻿using COLLM.Interfaces.Services;
+using COLLM.Services;
 
-namespace LMACO.Extensions;
+namespace COLLM.Extensions;
 
 internal static class ServicesExtensions
 {
