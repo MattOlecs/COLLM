@@ -3,14 +3,14 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DAL.Contexts;
 
-public class LmacoContext : DbContext
+public class CollmContext : DbContext
 {
-    public LmacoContext(DbContextOptions<LmacoContext> options): base(options)
+    public CollmContext(DbContextOptions<CollmContext> options): base(options)
     {
         
     }
 
-    public LmacoContext()
+    public CollmContext()
     {
         
     }

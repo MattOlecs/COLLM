@@ -1,6 +1,4 @@
-﻿using COLLM.CQRS.Interfaces;
-
-namespace COLLM.Interfaces.Services;
+﻿namespace COLLM.CQRS.Interfaces;
 
 public interface ICommandDispatcher
 {

@@ -10,7 +10,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace DAL.Migrations
 {
-    [DbContext(typeof(LmacoContext))]
+    [DbContext(typeof(CollmContext))]
     [Migration("20231016152515_Initial")]
     partial class Initial
     {

@@ -7,9 +7,9 @@ namespace DAL.Repositories;
 
 internal class RequestRepository : IRequestRepository
 {
-    private readonly LmacoContext _dbContext;
+    private readonly CollmContext _dbContext;
 
-    public RequestRepository(LmacoContext dbContext)
+    public RequestRepository(CollmContext dbContext)
     {
         _dbContext = dbContext;
     }

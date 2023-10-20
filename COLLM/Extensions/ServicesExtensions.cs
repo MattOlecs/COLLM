@@ -1,6 +1,7 @@
-﻿using COLLM.CQRS;
+﻿using System.Net.Http.Headers;
+using COLLM.CQRS;
 using COLLM.CQRS.Interfaces;
-using COLLM.CQRS.Query;
+using COLLM.CQRS.Query.GetSentencesSimilarityQuery;
 using COLLM.Interfaces.Services;
 using COLLM.Services;
 
@@ -15,6 +16,15 @@ internal static class ServicesExtensions
             .RegisterSingletons();
 
         services.RegisterCQRS();
+        
+        services
+            .AddHttpClient<ChatGptClient>((serviceProvider, httpClient) =>
+            {
+                httpClient.BaseAddress = new Uri("https://api.openai.com/v1");
+                var configuration = serviceProvider.GetRequiredService<IConfiguration>();
+                var apiKey = configuration["ChatGptApiKey"];
+                httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", apiKey);
+            });
 
         return services;
     }
@@ -41,5 +51,6 @@ internal static class ServicesExtensions
     {
         return services
             .AddTransient<IGptRequestCostSimulator, GptRequestCostSimulator>();
+        // .AddTransient<IChatGptService, ChatGptService>();
     }
 }

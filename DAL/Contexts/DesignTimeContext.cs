@@ -3,14 +3,14 @@ using Microsoft.EntityFrameworkCore.Design;
 
 namespace DAL.Contexts;
 
-public class DesignTimeContext : IDesignTimeDbContextFactory<LmacoContext>
+public class DesignTimeContext : IDesignTimeDbContextFactory<CollmContext>
 {
-    public LmacoContext CreateDbContext(string[] args)
+    public CollmContext CreateDbContext(string[] args)
     {
-        var optionsBuilder = new DbContextOptionsBuilder<LmacoContext>();
+        var optionsBuilder = new DbContextOptionsBuilder<CollmContext>();
         optionsBuilder.UseNpgsql(
             "User ID=admin;Password=1111;Host=localhost;Port=5432;Database=COLLM;Pooling=true;");
 
-        return new LmacoContext(optionsBuilder.Options);
+        return new CollmContext(optionsBuilder.Options);
     }
 }
