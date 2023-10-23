@@ -35,10 +35,4 @@ public class RequestsController : AbstractController
     {
         return _gptRequestCostSimulator.GetPromptPrice(prompt);
     }
-    
-    [HttpPost("gpt-request")]
-    public async Task GetGptPrompt()
-    {
-        await _chatGptClient.SendRequestAsync();
-    }
 }

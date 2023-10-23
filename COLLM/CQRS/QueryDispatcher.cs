@@ -1,5 +1,4 @@
 ﻿using COLLM.CQRS.Interfaces;
-using COLLM.Interfaces.Services;
 
 namespace COLLM.CQRS;
 
