@@ -1,8 +1,10 @@
 ﻿using COLLM.CQRS.Interfaces;
+using COLLM.CQRS.Queries.GetStoredCompletionsBySimilarityQuery;
 using COLLM.CQRS.Query.GetSentencesSimilarityQuery;
 using COLLM.DTO;
 using COLLM.Interfaces.Services;
 using COLLM.Services;
+using DAL.Entities;
 using Microsoft.AspNetCore.Mvc;
 
 namespace COLLM.Controllers;
@@ -34,5 +36,15 @@ public class RequestsController : AbstractController
     public double GetEstimatedCost([FromBody] string prompt)
     {
         return _gptRequestCostSimulator.GetPromptPrice(prompt);
+    }
+
+    [HttpPost("similarity/request")]
+    public async Task<Request[]> GetRequestsBySimilarity([FromBody] GetSimilarSentencesDTO getSimilarSentencesDto)
+    {
+        var result = await _queryDispatcher.Dispatch<GetStoredCompletionsBySimilarityQuery, Request[]>(
+            new GetStoredCompletionsBySimilarityQuery(getSimilarSentencesDto.Prompt,
+                getSimilarSentencesDto.Similarity));
+
+        return result;
     }
 }

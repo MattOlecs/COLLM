@@ -21,10 +21,7 @@ public class GetChatGptResponseQueryHandler : IQueryHandler<GetChatGptResponseQu
     public async Task<string> Handle(GetChatGptResponseQuery query)
     {
         var api = new OpenAI_API.OpenAIAPI(_configuration["ChatGptApiKey"]);
-        //var result = await api.Completions.GetCompletion(query.Prompt);
-        var result = await api.Completions.CreateCompletionAsync(new CompletionRequest(query.Prompt, Model.DavinciText));
+        var result = await api.Completions.CreateCompletionAsync(new CompletionRequest(query.Prompt, Model.DavinciText, max_tokens: 250));
         return result.Completions.First().Text;
-        // var response = await _chatGptClient.SendRequestAsync(query.Prompt);
-        // return response;
     }
 }
