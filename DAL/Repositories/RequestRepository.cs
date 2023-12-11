@@ -1,5 +1,6 @@
 ﻿using DAL.Contexts;
 using DAL.Entities;
+using DAL.Records;
 using DAL.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
@@ -19,18 +20,13 @@ internal class RequestRepository : IRequestRepository
         return await _dbContext.Requests.ToListAsync();
     }
 
-    public async Task AddRequest(Request request)
+    public async Task AddRequestAsync(Request request)
     {
         await _dbContext.Requests.AddAsync(request);
     }
 
-    public async Task<Request[]> GetBySimilarity(Func<Request, bool> query)
+    public async Task<Request[]> GetBySimilarityAsync(Func<Request, bool> query)
     {
-        // return await _dbContext
-        //     .Requests
-        //     .Where(query)
-        //     .ToArrayAsync();
-        //
         const int batchSize = 100;
         List<Request> result = new List<Request>();
         int skip = 0;
@@ -54,5 +50,57 @@ internal class RequestRepository : IRequestRepository
         }
 
         return result.ToArray();
+    }
+    
+    public async Task<Sentence[]> GetWithHighestSimilarityAsync(Func<Request, double> countSimilarity, int length)
+    {
+        const int batchSize = 100;
+        Sentence[] result = new Sentence[length];
+        int skip = 0;
+
+        while (true)
+        {
+            var batch = await _dbContext
+                .Requests
+                .Skip(skip)
+                .Take(batchSize)
+                .ToListAsync();
+
+            if (batch.Count == 0)
+            {
+                // No more records to process
+                break;
+            }
+
+            var temp = batch
+                .Select(x => new Sentence(x.ID, x.Question, countSimilarity(x)))
+                .OrderBy(x => x.Similarity)
+                .TakeLast(length)
+                .ToArray();
+
+            for (int i = 0; i < temp.Count(); i++)
+            {
+                Sentence? oldSentence = result[i];
+                Sentence? newSentence = temp[i];
+                if (oldSentence == null || newSentence?.Similarity > oldSentence?.Similarity)
+                {
+                    result[i] = temp[i];
+                }
+            }
+
+            result = result
+                .Where(x => x != null)
+                .OrderBy(x => x.Similarity)
+                .ToArray();
+            
+            skip += batchSize;
+        }
+
+        return result.ToArray();
+    }
+
+    public async Task SaveChangesAsync()
+    {
+        await _dbContext.SaveChangesAsync();
     }
 }

@@ -1,28 +1,25 @@
 ﻿using COLLM.CQRS.Interfaces;
 using COLLM.CQRS.Queries.GetStoredCompletionsBySimilarityQuery;
+using COLLM.CQRS.Queries.GetSuggestedSentencesQuery;
 using COLLM.CQRS.Query.GetSentencesSimilarityQuery;
 using COLLM.DTO;
 using COLLM.Interfaces.Services;
-using COLLM.Services;
 using DAL.Entities;
 using Microsoft.AspNetCore.Mvc;
 
 namespace COLLM.Controllers;
 
-public class RequestsController : AbstractController
+public class SequencesController : AbstractController
 {
     private readonly IGptRequestCostSimulator _gptRequestCostSimulator;
     private readonly IQueryDispatcher _queryDispatcher;
-    private readonly ChatGptClient _chatGptClient;
 
-    public RequestsController(
+    public SequencesController(
         IGptRequestCostSimulator gptRequestCostSimulator,
-        IQueryDispatcher queryDispatcher,
-        ChatGptClient chatGptClient)
+        IQueryDispatcher queryDispatcher)
     {
         _gptRequestCostSimulator = gptRequestCostSimulator;
         _queryDispatcher = queryDispatcher;
-        _chatGptClient = chatGptClient;
     }
     
     [HttpPost("similarity")]
@@ -31,14 +28,24 @@ public class RequestsController : AbstractController
         return await _queryDispatcher.Dispatch<GetSentencesSimilarityQuery, double>(
             new GetSentencesSimilarityQuery(sentencesSimilarityDto));
     }
-
+    
     [HttpPost("cost")]
     public double GetEstimatedCost([FromBody] string prompt)
     {
         return _gptRequestCostSimulator.GetPromptPrice(prompt);
     }
+    
+    [HttpPost("similar/suggestions")]
+    public async Task<SentenceDTO[]> GetSuggestedSentences([FromBody] GetSuggestedSentencesDTO getSuggestedSentencesDto)
+    {
+        var result =
+            await _queryDispatcher.Dispatch<GetSuggestedSentencesQuery, SentenceDTO[]>(
+                new GetSuggestedSentencesQuery(getSuggestedSentencesDto));
 
-    [HttpPost("similarity/request")]
+        return result;
+    }
+
+    [HttpPost("similar")]
     public async Task<Request[]> GetRequestsBySimilarity([FromBody] GetSimilarSentencesDTO getSimilarSentencesDto)
     {
         var result = await _queryDispatcher.Dispatch<GetStoredCompletionsBySimilarityQuery, Request[]>(

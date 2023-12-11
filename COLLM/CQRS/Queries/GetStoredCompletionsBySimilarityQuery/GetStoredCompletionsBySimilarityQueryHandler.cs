@@ -21,7 +21,7 @@ public class GetStoredCompletionsBySimilarityQueryHandler : IQueryHandler<GetSto
     public Task<Request[]> Handle(GetStoredCompletionsBySimilarityQuery query)
     {
         var requests = _requestRepository
-            .GetBySimilarity(r =>
+            .GetBySimilarityAsync(r =>
                 _pythonScriptExecutor.GetSentencesSimilarityUsingSpacy(query.Prompt, r.Question) > query.Similarity);
 
         return requests;

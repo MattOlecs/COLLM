@@ -1,5 +1,6 @@
 ﻿using COLLM.CQRS.Interfaces;
 using COLLM.CQRS.Queries.GetChatGptResponseQuery;
+using COLLM.DTO;
 using Microsoft.AspNetCore.Mvc;
 
 namespace COLLM.Controllers;
@@ -14,9 +15,11 @@ public class BrokerController : AbstractController
     }
 
     [HttpPost("chat-gpt")]
-    public async Task<string> GetChatGptResponse([FromBody] string prompt)
+    public async Task<ReadAIAnswerDTO> GetAIResponse([FromBody] GetAIResponseDTO getAiResponseDto)
     {
-        var response = await _queryDispatcher.Dispatch<GetChatGptResponseQuery, string>(new GetChatGptResponseQuery(prompt));
+        var response =
+            await _queryDispatcher.Dispatch<GetChatGptResponseQuery, ReadAIAnswerDTO>(
+                new GetChatGptResponseQuery(getAiResponseDto.Prompt, getAiResponseDto.Similarity));
         return response;
     }
 }
