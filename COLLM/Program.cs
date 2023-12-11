@@ -14,6 +14,12 @@ builder.Services.AddRepositories();
 
 builder.Services.RegisterServices();
 
+//temp
+builder.Services.AddCors(policyBuilder =>
+    policyBuilder.AddDefaultPolicy(policy =>
+        policy.WithOrigins("*").AllowAnyHeader().AllowAnyHeader())
+);
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
@@ -27,5 +33,7 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.UseCors();
 
 app.Run();
