@@ -21,9 +21,10 @@ internal class PythonScriptExecutor : IPythonScriptExecutor
         string result;
         using (Py.GIL())
         {
+            //python -m spacy download en_core_web_lg
             dynamic spacy = Py.Import("spacy");
-            dynamic nlp = spacy.load("en_core_web_sm");
-            // dynamic nlp = spacy.load("en_core_web_trf");
+            //dynamic nlp = spacy.load("en_core_web_sm");
+             dynamic nlp = spacy.load("en_core_web_lg");
 
             dynamic doc1 = nlp(firstSentence);
             dynamic doc2 = nlp(secondSentence);
