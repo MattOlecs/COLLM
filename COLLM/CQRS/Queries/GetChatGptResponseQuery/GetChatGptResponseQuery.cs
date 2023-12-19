@@ -3,4 +3,4 @@ using COLLM.DTO;
 
 namespace COLLM.CQRS.Queries.GetChatGptResponseQuery;
 
-public record GetChatGptResponseQuery(string Prompt, double Similarity) : IQuery<ReadAIAnswerDTO>;
+public record GetChatGptResponseQuery(string Prompt) : IQuery<ReadAIAnswerDTO>;

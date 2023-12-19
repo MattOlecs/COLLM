@@ -12,8 +12,9 @@ public static class Extensions
     public static IServiceCollection RegisterLmacoDb(this IServiceCollection serviceCollection, ConfigurationManager config)
     {
         return serviceCollection
-            .AddEntityFrameworkNpgsql().AddDbContext<CollmContext>(
-            options => options.UseNpgsql(config.GetConnectionString("PostgresDb"),  b => b.MigrationsAssembly("DAL")));
+            .AddDbContext<CollmContext>(
+                options => options.UseNpgsql(config.GetConnectionString("PostgresDb"),
+                    b => b.MigrationsAssembly("DAL")));
     }
     
     public static IServiceCollection AddRepositories(this IServiceCollection serviceCollection)

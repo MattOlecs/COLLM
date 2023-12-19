@@ -1,3 +1,3 @@
 ﻿namespace COLLM.DTO;
 
-public record GetAIResponseDTO(string Prompt, double Similarity);
+public record GetAIResponseDTO(string Prompt);

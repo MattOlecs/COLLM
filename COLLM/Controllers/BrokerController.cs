@@ -19,7 +19,7 @@ public class BrokerController : AbstractController
     {
         var response =
             await _queryDispatcher.Dispatch<GetChatGptResponseQuery, ReadAIAnswerDTO>(
-                new GetChatGptResponseQuery(getAiResponseDto.Prompt, getAiResponseDto.Similarity));
+                new GetChatGptResponseQuery(getAiResponseDto.Prompt));
         return response;
     }
 }

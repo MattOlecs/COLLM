@@ -15,6 +15,17 @@ internal class RequestRepository : IRequestRepository
         _dbContext = dbContext;
     }
 
+    public async Task<Sentence?> GetAsync(int id)
+    {
+        var request = await _dbContext
+            .Requests
+            .FirstOrDefaultAsync(r => r.ID == id);
+
+        return request is null 
+            ? null
+            : new Sentence(request.ID, request.Answer, 0);
+    }
+
     public async Task<IEnumerable<Request>> GetAllRequestsAsync()
     {
         return await _dbContext.Requests.ToListAsync();

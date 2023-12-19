@@ -3,4 +3,4 @@ using COLLM.DTO;
 
 namespace COLLM.CQRS.Queries.GetSuggestedSentencesQuery;
 
-public record GetSuggestedSentencesQuery(GetSuggestedSentencesDTO GetSuggestedSentencesDto) : IQuery<SentenceDTO[]>;
+public record GetSuggestedSentencesQuery(GetSuggestedSentencesDTO GetSuggestedSentencesDto) : IQuery<SuggestionDTO[]>;

@@ -1,4 +1,5 @@
 ﻿using COLLM.CQRS.Interfaces;
+using COLLM.CQRS.Queries.GetSentenceQuery;
 using COLLM.CQRS.Queries.GetStoredCompletionsBySimilarityQuery;
 using COLLM.CQRS.Queries.GetSuggestedSentencesQuery;
 using COLLM.CQRS.Query.GetSentencesSimilarityQuery;
@@ -9,17 +10,24 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace COLLM.Controllers;
 
-public class SequencesController : AbstractController
+public class SentencesController : AbstractController
 {
     private readonly IGptRequestCostSimulator _gptRequestCostSimulator;
     private readonly IQueryDispatcher _queryDispatcher;
 
-    public SequencesController(
+    public SentencesController(
         IGptRequestCostSimulator gptRequestCostSimulator,
         IQueryDispatcher queryDispatcher)
     {
         _gptRequestCostSimulator = gptRequestCostSimulator;
         _queryDispatcher = queryDispatcher;
+    }
+    
+    [HttpGet("{id}")]
+    public async Task<SentenceDTO> GetSentence(int id)
+    {
+        return await _queryDispatcher.Dispatch<GetSentenceQuery, SentenceDTO>(
+            new GetSentenceQuery(id));
     }
     
     [HttpPost("similarity")]
@@ -36,10 +44,10 @@ public class SequencesController : AbstractController
     }
     
     [HttpPost("similar/suggestions")]
-    public async Task<SentenceDTO[]> GetSuggestedSentences([FromBody] GetSuggestedSentencesDTO getSuggestedSentencesDto)
+    public async Task<SuggestionDTO[]> GetSuggestedSentences([FromBody] GetSuggestedSentencesDTO getSuggestedSentencesDto)
     {
         var result =
-            await _queryDispatcher.Dispatch<GetSuggestedSentencesQuery, SentenceDTO[]>(
+            await _queryDispatcher.Dispatch<GetSuggestedSentencesQuery, SuggestionDTO[]>(
                 new GetSuggestedSentencesQuery(getSuggestedSentencesDto));
 
         return result;

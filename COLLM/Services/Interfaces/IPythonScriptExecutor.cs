@@ -1,4 +1,6 @@
-﻿namespace COLLM.Interfaces.Services;
+﻿using COLLM.Services;
+
+namespace COLLM.Interfaces.Services;
 
 public interface IPythonScriptExecutor
 {

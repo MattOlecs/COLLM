@@ -2,6 +2,7 @@
 using COLLM.CQRS;
 using COLLM.CQRS.Interfaces;
 using COLLM.CQRS.Queries.GetChatGptResponseQuery;
+using COLLM.CQRS.Queries.GetSentenceQuery;
 using COLLM.CQRS.Queries.GetStoredCompletionsBySimilarityQuery;
 using COLLM.CQRS.Queries.GetSuggestedSentencesQuery;
 using COLLM.CQRS.Query.GetSentencesSimilarityQuery;
@@ -44,7 +45,8 @@ internal static class ServicesExtensions
             .AddTransient<IQueryHandler<GetSentencesSimilarityQuery, double>, GetSentencesSimilarityQueryHandler>()
             .AddTransient<IQueryHandler<GetChatGptResponseQuery, ReadAIAnswerDTO>, GetChatGptResponseQueryHandler>()
             .AddTransient<IQueryHandler<GetStoredCompletionsBySimilarityQuery, Request[]>, GetStoredCompletionsBySimilarityQueryHandler>()
-            .AddTransient<IQueryHandler<GetSuggestedSentencesQuery, SentenceDTO[]>, GetSuggestedSentencesQueryHandler>();
+            .AddTransient<IQueryHandler<GetSentenceQuery, SentenceDTO>, GetSentenceQueryHandler>()
+            .AddTransient<IQueryHandler<GetSuggestedSentencesQuery, SuggestionDTO[]>, GetSuggestedSentencesQueryHandler>();
 
         return services;
     } 

@@ -4,8 +4,7 @@ using COLLM.Interfaces.Services;
 using COLLM.Services;
 using DAL.Entities;
 using DAL.Repositories.Interfaces;
-using OpenAI_API.Completions;
-using OpenAI_API.Models;
+using OpenAI_API.Chat;
 
 namespace COLLM.CQRS.Queries.GetChatGptResponseQuery;
 
@@ -30,26 +29,18 @@ public class GetChatGptResponseQueryHandler : IQueryHandler<GetChatGptResponseQu
 
     public async Task<ReadAIAnswerDTO> Handle(GetChatGptResponseQuery query)
     {
-        var stored = await _requestRepository
-            .GetBySimilarityAsync(r =>
-                _pythonScriptExecutor.GetSentencesSimilarityUsingSpacy(query.Prompt, r.Question) > query.Similarity);
-
-        if (stored.Length > 0)
-        {
-            return new ReadAIAnswerDTO(stored.First().Answer, true);
-        }
-        
         var api = new OpenAI_API.OpenAIAPI(_configuration["ChatGptApiKey"]);
-        var result = await api.Completions.CreateCompletionAsync(new CompletionRequest(query.Prompt, Model.DavinciText, max_tokens: 1000));
-
+        var result = await api.Chat.CreateChatCompletionAsync(new ChatMessage(ChatMessageRole.User, query.Prompt));
+        var answer = result.Choices[0].Message.Content;
+        
         await _requestRepository.AddRequestAsync(
             new Request
             {
                 Question = query.Prompt,
-                Answer = result.Completions.First().Text
+                Answer = answer
             });
         await _requestRepository.SaveChangesAsync();
         
-        return new ReadAIAnswerDTO(result.Completions.First().Text, false);
+        return new ReadAIAnswerDTO(answer, false);
     }
 }
