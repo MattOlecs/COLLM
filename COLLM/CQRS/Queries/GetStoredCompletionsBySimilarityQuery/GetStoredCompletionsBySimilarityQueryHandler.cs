@@ -22,7 +22,12 @@ public class GetStoredCompletionsBySimilarityQueryHandler : IQueryHandler<GetSto
     {
         var requests = _requestRepository
             .GetBySimilarityAsync(r =>
-                _pythonScriptExecutor.GetSentencesSimilarityUsingSpacy(query.Prompt, r.Question) > query.Similarity);
+                {
+                    var firstCollection = r.Select(x => x.Question).ToArray();
+                    var secondCollection = r.Select(x => query.Prompt).ToArray();
+                    return _pythonScriptExecutor.GetSentencesSimilarityUsingSpacy(firstCollection, secondCollection);
+                }, 
+            query.Similarity);
 
         return requests;
     }

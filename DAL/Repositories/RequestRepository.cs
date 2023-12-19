@@ -26,17 +26,12 @@ internal class RequestRepository : IRequestRepository
             : new Sentence(request.ID, request.Answer, 0);
     }
 
-    public async Task<IEnumerable<Request>> GetAllRequestsAsync()
-    {
-        return await _dbContext.Requests.ToListAsync();
-    }
-
     public async Task AddRequestAsync(Request request)
     {
         await _dbContext.Requests.AddAsync(request);
     }
 
-    public async Task<Request[]> GetBySimilarityAsync(Func<Request, bool> query)
+    public async Task<Request[]> GetBySimilarityAsync(Func<Request[], double[]> similarityFunc, double similarity)
     {
         const int batchSize = 100;
         List<Request> result = new List<Request>();
@@ -48,22 +43,30 @@ internal class RequestRepository : IRequestRepository
                 .Requests
                 .Skip(skip)
                 .Take(batchSize)
-                .ToListAsync();
+                .ToArrayAsync();
 
-            if (batch.Count == 0)
+            var similarities = similarityFunc(batch.ToArray());
+            for (int i = 0; i < similarities.Length; i++)
+            {
+                if (similarities[i] > similarity)
+                {
+                    result.Add(batch[i]);
+                }
+            }
+            
+            if (batch.Length == 0)
             {
                 // No more records to process
                 break;
             }
 
-            result.AddRange(batch.Where(query));
             skip += batchSize;
         }
 
         return result.ToArray();
     }
     
-    public async Task<Sentence[]> GetWithHighestSimilarityAsync(Func<Request, double> countSimilarity, int length)
+    public async Task<Sentence[]> GetWithHighestSimilarityAsync(Func<Request[], double[]> countSimilarity, int length)
     {
         const int batchSize = 100;
         Sentence[] result = new Sentence[length];
@@ -75,16 +78,23 @@ internal class RequestRepository : IRequestRepository
                 .Requests
                 .Skip(skip)
                 .Take(batchSize)
-                .ToListAsync();
+                .ToArrayAsync();
 
-            if (batch.Count == 0)
+            if (batch.Length == 0)
             {
                 // No more records to process
                 break;
             }
 
-            var temp = batch
-                .Select(x => new Sentence(x.ID, x.Question, countSimilarity(x)))
+            var similarities = countSimilarity(batch.ToArray());
+            var sentences = new Sentence[similarities.Length];
+            
+            for (int i = 0; i < similarities.Length; i++)
+            {
+                sentences[i] = new Sentence(batch[i].ID, batch[i].Question, similarities[i]);
+            }
+            
+            var temp = sentences
                 .OrderBy(x => x.Similarity)
                 .TakeLast(length)
                 .ToArray();
