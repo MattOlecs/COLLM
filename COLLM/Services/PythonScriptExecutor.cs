@@ -19,7 +19,7 @@ internal class PythonScriptExecutor : IPythonScriptExecutor
         PythonEngine.Initialize();
         PythonEngine.BeginAllowThreads();
         timer.Stop();
-        Console.WriteLine($"Finised python initialization [{timer.Elapsed.Seconds} sec]");
+        Console.WriteLine($"Finished python initialization [{timer.Elapsed.Seconds} sec]");
     }
     
     public double GetSentencesSimilarityUsingSpacy(string firstSentence, string secondSentence)
@@ -43,5 +43,32 @@ internal class PythonScriptExecutor : IPythonScriptExecutor
         }
 
         return Convert.ToDouble(result);
+    }
+
+    public double[] GetSentencesSimilarityUsingSpacy(string[] first, string[] second)
+    {
+        double[] results = new double[first.Length];
+        
+        var timer = new Stopwatch();
+        using (Py.GIL())
+        {
+            Console.WriteLine($"Using gil took: {timer.Elapsed.Seconds} sec");
+            timer.Restart();
+            dynamic spacy = Py.Import("spacy");
+            dynamic nlp = spacy.load("en_core_web_lg");
+            
+            for (int i = 0; i < first.Length; i++)
+            {
+
+                dynamic doc1 = nlp(first[i]);
+                dynamic doc2 = nlp(second[i]);
+                dynamic similarity = doc1.similarity(doc2);
+                results[i] = Convert.ToDouble(similarity.ToString());
+            }
+            
+            Console.WriteLine($"Calc took {timer.Elapsed.Seconds} sec");
+        }
+
+        return results;
     }
 }

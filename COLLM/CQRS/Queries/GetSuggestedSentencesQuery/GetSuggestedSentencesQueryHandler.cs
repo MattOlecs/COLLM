@@ -28,8 +28,14 @@ public class GetSuggestedSentencesQueryHandler : IQueryHandler<GetSuggestedSente
         var calculationTimer = new Stopwatch();
         Sentence[] requests = await _requestRepository
             .GetWithHighestSimilarityAsync(r =>
-                _pythonScriptExecutor.GetSentencesSimilarityUsingSpacy(query.GetSuggestedSentencesDto.Request,
-                    r.Question), query.GetSuggestedSentencesDto.Length);
+                {
+                    string[] firstCollection = r.Select(x => query.GetSuggestedSentencesDto.Request).ToArray();
+                    string[] secondCollection = r.Select(x => x.Question).ToArray();
+
+                    return _pythonScriptExecutor.GetSentencesSimilarityUsingSpacy(firstCollection, secondCollection);
+                },
+                query.GetSuggestedSentencesDto.Length);
+                
         calculationTimer.Stop();
         Console.WriteLine($"calc time: {timer.Elapsed.Seconds} seconds");
         
